@@ -10,7 +10,7 @@ a = cell(total_layers,1);
 %forward propagation
 for i = 1:total_layers
     if (i == 1) 
-        %calculate the weight, bias, n for hidden layer 1
+        %calculate the weight, bias, n for first hidden layer
         W{i} = rand(s,length(p));
         b{i} = rand (s,1);
         n{i} = W{i}*p'+b{i};
