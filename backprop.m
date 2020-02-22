@@ -40,7 +40,10 @@ for m = total_layers:-1:1
     if (m == total_layers)
         S{m} = -2*(error)*diff_sig;
     else
-        S{m} = diff_sig*W{m+1}'*S{m+1};
+%         size(diff_sig)
+%         size(W{m+1}')
+%         size(S{m+1})
+        S{m} = diff_sig*(W{m+1}'*S{m+1});
     end
 end
 
@@ -48,9 +51,9 @@ end
 % 
 % for m = 1:total_layers
 %     if (m == 1)
-%         W{m} = W{m}-learning_rate*S{m}*p';
+%         W{m} = W{m}-learning_rate*S{m}*p;
 %     else
-%         W{m} = W{m}-learning_rate*S{m}*a{m-1};
+%         W{m} = W{m}-learning_rate*S{m}*a{m-1}';
 %     end
 %     b{m} = b{m}-learning_rate*S{m};
 % end
