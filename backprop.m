@@ -1,8 +1,8 @@
-function [S,a,n,error] = backprop(p,t, L, s) 
+function [W,S,a] = backprop(p,t, L, s) 
 %p = input, t = target, L = number of hidden layers, s = number of neurons
 
 %store all matricies
-total_layers = (L+1); %hidden layers + output
+total_layersL = (L+1); %hidden layers + output
 W = cell(total_layers,1); %weight
 b = cell (total_layers,1); %bias
 n = cell(total_layers,1); %output before transfer function
@@ -31,33 +31,25 @@ for m = 1:total_layers
 end
 
 S = cell(total_layers,1); 
-error = (norm((t-a{3}),2)^2)/3;
+error = (norm((t-a{total_layers}),2)^2)/3;
 
 %calculate and propagate sensitivites backwards
 
 for m = total_layers:-1:1
-    diff_sig = logsig(n{m}).*(1-logsig(n{m}));
+    diff_sig = diag(logsig('dn',n{m},a{m}));
     if (m == total_layers)
         S{m} = -2*(error)*diff_sig;
     else
-%         size(diff_sig)
-%         size(W{m+1}')
-%         size(S{m+1})
-        S{m} = diff_sig*(W{m+1}'*S{m+1});
+        S{m} = diff_sig*W{m+1}'*S{m+1};
     end
 end
 
-% learning_rate = 0.05;
-% 
-% for m = 1:total_layers
-%     if (m == 1)
-%         W{m} = W{m}-learning_rate*S{m}*p;
-%     else
-%         W{m} = W{m}-learning_rate*S{m}*a{m-1}';
-%     end
-%     b{m} = b{m}-learning_rate*S{m};
-% end
-% 
+learning_rate = 0.05;
+
+for m = total_layers:-1:1
+    b{m} = b{m}-learning_rate*S{m};
+end
+
 % for m = 1:total_layers
 %     if (m == 1) 
 %         n{m} = W{m}*p'+b{m};
