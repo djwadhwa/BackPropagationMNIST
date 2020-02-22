@@ -31,7 +31,7 @@ for m = 1:total_layers
 end
 
 S = cell(total_layers,1); 
-error = (norm((t-a{total_layers}),2)^2)/3;
+error = (norm((t-a{3}),2)^2)/3;
 
 %calculate and propagate sensitivites backwards
 
@@ -46,7 +46,12 @@ end
 
 learning_rate = 0.05;
 
-for m = total_layers:-1:1
+for m = 1:total_layers
+%     if (m == 1)
+%         W{m} = W{m}-learning_rate*S{m}*p;
+%     else
+%         W{m} = W{m}-learning_rate*S{m}*a{m-1}';
+%     end
     b{m} = b{m}-learning_rate*S{m};
 end
 
