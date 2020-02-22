@@ -2,7 +2,7 @@ function [W,S,a] = backprop(p,t, L, s)
 %p = input, t = target, L = number of hidden layers, s = number of neurons
 
 %store all matricies
-total_layersL = (L+1); %hidden layers + output
+total_layers = (L+1); %hidden layers + output
 W = cell(total_layers,1); %weight
 b = cell (total_layers,1); %bias
 n = cell(total_layers,1); %output before transfer function
