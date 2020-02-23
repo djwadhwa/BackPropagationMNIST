@@ -9,7 +9,7 @@ n = cell(total_layers,1); %output before transfer function
 a = cell(total_layers,1); %output for neuron
 S = cell(total_layers,1); %sensitivity
 
-alpha = 0.06; %learning_rate
+alpha = 0.05; %learning_rate
 
 %feedforward
 for m = 1:total_layers
@@ -34,31 +34,36 @@ for m = 1:total_layers
 end
 
 
-size_of_input = size(p);
 %calculate and propagate sensitivites backwards
 
 x = 0;
-while x < 1000
-    for i = 1:size_of_input(1)
+while x < 10000
+    for i = 1:size(t)
         for m = total_layers:-1:1
             diff_sig = diag((1-a{m}).*a{m});
             if (m == total_layers)
-                S{m} = -2*diff_sig*(t(i,:)'-a{m});
+%                 disp(t(:,i)-a{m})
+                S{m} = -2*diff_sig*(t(:,i)-a{m});
             else
                 S{m} = diff_sig*W{m+1}'*S{m+1};
             end
         end
         
         for m = 1:total_layers
-            b{m} = b{m}-alpha*S{m};
             if (m == 1)
-                W{m} = W{m}-alpha*S{m}*p(i);
-                n{m} = W{m}*p(i,:)'+b{m};
-            elseif (m == total_layers)
-                W{m} = W{m}-alpha*S{m}*a{m-1}';
-                n{m} = W{m}*a{m-1}+b{m};
+                W{m} = W{m}-alpha*S{m}*p(i,:);
             else
                 W{m} = W{m}-alpha*S{m}*a{m-1}';
+            end
+            b{m} = b{m}-alpha*S{m};
+        end
+        
+        for m = 1:total_layers
+            if (m == 1)
+                n{m} = W{m}*p(i,:)'+b{m};
+            elseif (m == total_layers)
+                n{m} = W{m}*a{m-1}+b{m};
+            else
                 n{m} = W{m}*a{m-1}+b{m};
             end
             a{m} = logsig(n{m}); %calculate the output for each layer
