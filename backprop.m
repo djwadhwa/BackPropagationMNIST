@@ -20,7 +20,6 @@ for m = 1:total_layers
         n{m} = W{m}*p(1,:)'+b{m};
     elseif (m == total_layers)
         % calculate the weight, bias, n for the last hidden layer
-        %       size_of_input = size(p);
         W{m} = rand (3, s);
         b{m} = rand (3, 1);
         n{m} = W{m}*a{m-1}+b{m};
@@ -35,14 +34,13 @@ end
 
 
 %calculate and propagate sensitivites backwards
-
 x = 0;
-while x < 10000
-    for i = 1:size(t)
+
+while x<10000
+    for i = 1:length(t)
         for m = total_layers:-1:1
             diff_sig = diag((1-a{m}).*a{m});
             if (m == total_layers)
-%                 disp(t(:,i)-a{m})
                 S{m} = -2*diff_sig*(t(:,i)-a{m});
             else
                 S{m} = diff_sig*W{m+1}'*S{m+1};
@@ -61,8 +59,6 @@ while x < 10000
         for m = 1:total_layers
             if (m == 1)
                 n{m} = W{m}*p(i,:)'+b{m};
-            elseif (m == total_layers)
-                n{m} = W{m}*a{m-1}+b{m};
             else
                 n{m} = W{m}*a{m-1}+b{m};
             end
