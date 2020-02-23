@@ -1,68 +1,88 @@
-function [W,S,a] = backprop(p,t, L, s) 
+function backprop(p,t, L, s) 
 %p = input, t = target, L = number of hidden layers, s = number of neurons
 
-%store all matricies
-total_layers = (L+1); %hidden layers + output
-W = cell(total_layers,1); %weight
-b = cell (total_layers,1); %bias
-n = cell(total_layers,1); %output before transfer function
-a = cell(total_layers,1); %output for neuron
+W1 = rand (2,1);
+W2 = rand (1, 2);
+b1 = rand (2, 1);
+b2 = rand (1,1);
+a1 = logsig(W1*p'+b1);
+a2 = logsig(W2*a1+b2);
 
-%feedforward
-for m = 1:total_layers
-    if (m == 1) 
-        %calculate the weight, bias, n for first hidden layer
-        W{m} = rand(s,length(p));
-        b{m} = rand (s,1);
-        n{m} = W{m}*p'+b{m};
-    elseif (m == total_layers) 
-        % calculate the weight, bias, n for the last hidden layer  
-%         size_of_input = size(p);
-        W{m} = rand (3, s);
-        b{m} = rand (3, 1);
-        n{m} = W{m}*a{m-1}+b{m};
-    else
-        %calculate the weights, and biases between hidden layers
-        W{m} = rand (s);
-        b{m} = rand (s,1);
-        n{m} = W{m}*a{m-1}+b{m};
-    end
-    a{m} = logsig(n{m}); %calculate the output for each layer
-end
+error = sum((t-a2).^2);
 
-S = cell(total_layers,1); 
-error = (norm((t-a{3}),2)^2)/3;
+s2 = -2*diag((1-a2))*error;
+s1 = diag(logsig('dn',a1,n1))*W2'*s2;
 
-%calculate and propagate sensitivites backwards
+W2= W2 - 0.5*s2*a1';
+b2 = b2 - 0.5*s2;
+W1 = W1-0.5*s1*p;
+b1 = b1 - 0.5*s1;
 
-for m = total_layers:-1:1
-    diff_sig = diag(logsig('dn',n{m},a{m}));
-    if (m == total_layers)
-        S{m} = -2*(error)*diff_sig;
-    else
-        S{m} = diff_sig*W{m+1}'*S{m+1};
-    end
-end
-
-learning_rate = 0.05;
-
-for m = 1:total_layers
+% % store all matricies
+% total_layers = (L+1); %hidden layers + output
+% W = cell(total_layers,1); %weight
+% b = cell (total_layers,1); %bias
+% n = cell(total_layers,1); %output before transfer function
+% a = cell(total_layers,1); %output for neuron
+% 
+% %feedforward
+% for m = 1:total_layers
+%     if (m == 1) 
+%         %calculate the weight, bias, n for first hidden layer
+%         W{m} = rand(s,length(p));
+%         b{m} = rand (s,1);
+%         n{m} = W{m}*p'+b{m};
+%     elseif (m == total_layers) 
+%         % calculate the weight, bias, n for the last hidden layer  
+% %       size_of_input = size(p);
+%         W{m} = rand (3, s);
+%         b{m} = rand (3, 1);
+%         n{m} = W{m}*a{m-1}+b{m};
+%     else
+%         %calculate the weights, and biases between hidden layers
+%         W{m} = rand (s);
+%         b{m} = rand (s,1);
+%         n{m} = W{m}*a{m-1}+b{m};
+%     end
+%     a{m} = logsig(n{m}); %calculate the output for each layer
+% end
+% 
+% S = cell(total_layers,1); 
+% error = (norm((t-a{total_layers}),2)^2);
+% 
+% %calculate and propagate sensitivites backwards
+% 
+% for m = total_layers:-1:1
+%     diff_sig = diag(logsig('dn',a{m},n{m}));
+%     if (m == total_layers)
+%         S{m} = -2*(error)*diff_sig;
+%     else
+%         disp(size(S{m}))
+%         disp(size(W{m}))
+%         disp(size(diff_sig))
+%         S{m} = diff_sig*W{m+1}'*S{m+1};
+%     end
+% end
+% 
+% learning_rate = 0.05;
+% 
+% for m = 2:total_layers
 %     if (m == 1)
 %         W{m} = W{m}-learning_rate*S{m}*p;
 %     else
 %         W{m} = W{m}-learning_rate*S{m}*a{m-1}';
 %     end
-    b{m} = b{m}-learning_rate*S{m};
-end
-
-% for m = 1:total_layers
-%     if (m == 1) 
-%         n{m} = W{m}*p'+b{m};
-%     elseif (m == total_layers) 
-%         n{m} = W{m}*a{m-1}+b{m};
-%     else
-%         n{m} = W{m}*a{m-1}+b{m};
-%     end
-%     a{m} = logsig(n{m}); %calculate the output for each layer
+%     b{m} = b{m}-learning_rate*S{m};
 % end
+% 
+% % for m = 1:total_layers
+% %     if (m == 1) 
+% %         n{m} = W{m}*p'+b{m};
+% %     elseif (m == total_layers) 
+% %         n{m} = W{m}*a{m-1}+b{m};
+% %     else
+% %         n{m} = W{m}*a{m-1}+b{m};
+% %     end
+% %     a{m} = logsig(n{m}); %calculate the output for each layer
+% % end
 end
