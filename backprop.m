@@ -11,25 +11,21 @@ S = cell(total_layers,1); %sensitivity
 
 alpha = 0.05; %learning_rate
 
-%feedforward
+%generate Weights and biases
 for m = 1:total_layers
     if (m == 1)
         %calculate the weight, bias, n for first hidden layer
         W{m} = rand(s,length(p));
         b{m} = rand (s,1);
-        n{m} = W{m}*p(1,:)'+b{m};
     elseif (m == total_layers)
         % calculate the weight, bias, n for the last hidden layer
         W{m} = rand (3, s);
         b{m} = rand (3, 1);
-        n{m} = W{m}*a{m-1}+b{m};
     else
         %calculate the weights, and biases between hidden layers
         W{m} = rand (s);
         b{m} = rand (s,1);
-        n{m} = W{m}*a{m-1}+b{m};
     end
-    a{m} = logsig(n{m}); %calculate the output for each layer
 end
 
 
@@ -37,8 +33,9 @@ end
 x = 0;
 
 while x<10000
+    %feedforward
     for i = 1:length(t)
-                
+        
         for m = 1:total_layers
             if (m == 1)
                 n{m} = W{m}*p(i,:)'+b{m};
@@ -48,6 +45,7 @@ while x<10000
             a{m} = logsig(n{m}); %calculate the output for each layer
         end
         
+        %propagate sensitivities backwards
         for m = total_layers:-1:1
             diff_sig = diag((1-a{m}).*a{m});
             if (m == total_layers)
@@ -57,6 +55,7 @@ while x<10000
             end
         end
         
+        %update weights and biases
         for m = 1:total_layers
             if (m == 1)
                 W{m} = W{m}-alpha*S{m}*p(i,:);
@@ -65,7 +64,7 @@ while x<10000
             end
             b{m} = b{m}-alpha*S{m};
         end
-
+        
     end
     x=x+1;
 end
