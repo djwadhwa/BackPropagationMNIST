@@ -38,6 +38,16 @@ x = 0;
 
 while x<10000
     for i = 1:length(t)
+                
+        for m = 1:total_layers
+            if (m == 1)
+                n{m} = W{m}*p(i,:)'+b{m};
+            else
+                n{m} = W{m}*a{m-1}+b{m};
+            end
+            a{m} = logsig(n{m}); %calculate the output for each layer
+        end
+        
         for m = total_layers:-1:1
             diff_sig = diag((1-a{m}).*a{m});
             if (m == total_layers)
@@ -55,15 +65,7 @@ while x<10000
             end
             b{m} = b{m}-alpha*S{m};
         end
-        
-        for m = 1:total_layers
-            if (m == 1)
-                n{m} = W{m}*p(i,:)'+b{m};
-            else
-                n{m} = W{m}*a{m-1}+b{m};
-            end
-            a{m} = logsig(n{m}); %calculate the output for each layer
-        end
+
     end
     x=x+1;
 end
