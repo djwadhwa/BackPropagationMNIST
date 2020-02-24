@@ -15,15 +15,15 @@ alpha = 0.05; %learning_rate
 for m = 1:total_layers
     if (m == 1)
         %calculate the weight, bias, n for first hidden layer
-        W{m} = rand(s,length(p));
+        W{m} = rand(s,length(p))*.1;
         b{m} = rand (s,1);
     elseif (m == total_layers)
         % calculate the weight, bias, n for the last hidden layer
-        W{m} = rand (3, s);
+        W{m} = rand (3, s)*.1;
         b{m} = rand (3, 1);
     else
         %calculate the weights, and biases between hidden layers
-        W{m} = rand (s);
+        W{m} = rand (s)*.1;
         b{m} = rand (s,1);
     end
 end
@@ -32,7 +32,7 @@ end
 %calculate and propagate sensitivites backwards
 x = 0;
 
-while x<10000
+while x<1000
     %feedforward
     for i = 1:length(t)
         
