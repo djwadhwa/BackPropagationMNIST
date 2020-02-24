@@ -1,10 +1,14 @@
 function [W,b,a] = backprop(p,t, L, s)
 % p = input, t = target, L = number of hidden layers, s = number of neurons
 
+% counting the number of input and make a n array of n inputs
+input_counter = size(p,1);
+outputs = cell(input_counter,1);
+
 % store all matricies
 total_layers = (L+1); %hidden layers + output
 W = cell(total_layers,1); %weight
-b = cell (total_layers,1); %bias
+b = cell(total_layers,1); %bias
 n = cell(total_layers,1); %output before transfer function
 a = cell(total_layers,1); %output for neuron
 S = cell(total_layers,1); %sensitivity
@@ -43,6 +47,12 @@ while x<1000
                 n{m} = W{m}*a{m-1}+b{m};
             end
             a{m} = logsig(n{m}); %calculate the output for each layer
+            
+            %show the last output for all digits in the input
+            if x == 999 && m == total_layers
+                outputs{i} = a{m}
+                celldisp(outputs)
+            end
         end
         
         %propagate sensitivities backwards
