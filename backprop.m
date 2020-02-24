@@ -1,8 +1,9 @@
-function [W,b,a] = backprop(p,t, L, s)
+function [W,b,a] = backprop(p,t, L, s, alpha , iterations)
 % p = input, t = target, L = number of hidden layers, s = number of neurons
+%alpha = learning_rate, iterations = # of iterations to propagate
 
 % counting the number of input and make a n array of n inputs
-input_counter = size(p,1);
+% input_counter = size(p,1);
 % outputs = cell(input_counter,1);
 
 % store all matricies
@@ -11,9 +12,7 @@ W = cell(total_layers,1); %weight
 b = cell(total_layers,1); %bias
 n = cell(total_layers,1); %output before transfer function
 a = cell(total_layers,1); %output for neuron
-S = cell(total_layers,1); %sensitivity
-
-alpha = 0.1; %learning_rate
+S = cell(total_layers,1); %sensitivity 
 
 %generate Weights and biases
 for m = 1:total_layers
@@ -34,9 +33,8 @@ end
 
 
 %calculate and propagate sensitivites backwards
-x = 0;
-iterations = 650;
-error = zeros(iterations*length(t));
+x = 1;
+error = zeros(iterations);
 while x<iterations
     %feedforward
     for i = 1:length(t)
@@ -55,9 +53,7 @@ while x<iterations
             %                 celldisp(outputs);
             %             end
         end
-        
-%         outputs(:,i) = a{total_layers};
-        
+                
         %propagate sensitivities backwards
         for m = total_layers:-1:1
             diff_sig = diag((1-a{m}).*a{m});
@@ -66,10 +62,9 @@ while x<iterations
             else
                 S{m} = diff_sig*W{m+1}'*S{m+1};
             end
-        end
+        end   
         
-        
-        error (x*length(t)+i) = sum((t(:,i)-a{total_layers}).^2)/3;
+%         error (x*length(t)+i) = sum((t(:,i)-a{total_layers}).^2)/length(a);
         
         %update weights and biases
         for m = 1:total_layers
@@ -81,7 +76,8 @@ while x<iterations
             b{m} = b{m}-alpha*S{m};
         end
     end
+    error(x) = sum((t(:,i)-a{total_layers}).^2);
     x=x+1;
 end
-plot1 = plot([0:length(error)-1],error);
+plot1 = plot([1:iterations],error(1:iterations));
 end
