@@ -3,7 +3,7 @@ function [W,b,a] = backprop(p,t, L, s)
 
 % counting the number of input and make a n array of n inputs
 input_counter = size(p,1);
-outputs = cell(input_counter,1);
+% outputs = cell(input_counter,1);
 
 % store all matricies
 total_layers = (L+1); %hidden layers + output
@@ -13,7 +13,7 @@ n = cell(total_layers,1); %output before transfer function
 a = cell(total_layers,1); %output for neuron
 S = cell(total_layers,1); %sensitivity
 
-alpha = 0.05; %learning_rate
+alpha = 0.7; %learning_rate
 
 %generate Weights and biases
 for m = 1:total_layers
@@ -34,9 +34,10 @@ end
 
 
 %calculate and propagate sensitivites backwards
-x = 0;
-
-while x<1000
+x = 1;
+outputs = zeros(size(t));
+error = zeros(30);
+while x<30
     %feedforward
     for i = 1:length(t)
         
@@ -49,11 +50,13 @@ while x<1000
             a{m} = logsig(n{m}); %calculate the output for each layer
             
             %show the last output for all digits in the input
-            if x == 999 && m == total_layers
-                outputs{i} = a{m}
-                celldisp(outputs)
-            end
+            %             if x == 999 && m == total_layers
+            %                 outputs{i} = a{m};
+            %                 celldisp(outputs);
+            %             end
         end
+        
+        outputs(:,i) = a{total_layers};
         
         %propagate sensitivities backwards
         for m = total_layers:-1:1
@@ -65,6 +68,8 @@ while x<1000
             end
         end
         
+%         error (x*length(t)+i) = sum((t(:,i)-a{total_layers}).^2)/3;
+        
         %update weights and biases
         for m = 1:total_layers
             if (m == 1)
@@ -74,8 +79,9 @@ while x<1000
             end
             b{m} = b{m}-alpha*S{m};
         end
-        
     end
+    error (x) = sum(sum(t-outputs)).^2/length(t);
     x=x+1;
 end
+plot1 = plot([1:1000],error);
 end
