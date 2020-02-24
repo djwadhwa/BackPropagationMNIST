@@ -1,4 +1,4 @@
-function [W,b,error] = backprop(p,t, L, s, alpha , iterations)
+function [W,b,a,error] = backprop(p,t, L, s, alpha , iterations)
 % p = input, t = target, L = number of hidden layers, s = number of neurons
 %alpha = learning_rate, iterations = # of iterations to propagate
 
