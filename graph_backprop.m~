@@ -1,0 +1,5 @@
+function graph_backprop()
+figure;
+plot1 = plot([1:iterations],error(1:iterations));
+
+end

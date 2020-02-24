@@ -1,4 +1,4 @@
-function [W,b,a] = backprop(p,t, L, s, alpha , iterations)
+function [W,b,error] = backprop(p,t, L, s, alpha , iterations)
 % p = input, t = target, L = number of hidden layers, s = number of neurons
 %alpha = learning_rate, iterations = # of iterations to propagate
 
@@ -79,5 +79,4 @@ while x<iterations
     error(x) = sum((t(:,i)-a{total_layers}).^2);
     x=x+1;
 end
-plot1 = plot([1:iterations],error(1:iterations));
 end
