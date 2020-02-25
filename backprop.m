@@ -1,4 +1,4 @@
-function [W,b,a,mse] = backprop(p, t, L, s, alpha, epochs, output)
+function [W,b,mse] = backprop(p, t, L, s, alpha, epochs, output)
 % p = input, t = target, L = number of layers, s = number of neurons
 %alpha = learning_rate, epochs = # of epochs to propagate,
 %output = number_of_neurons in the output layer
@@ -69,7 +69,8 @@ while x < epochs
         end
     end
     label (t(i)+1) = 1;
-        mse(x) = sum((label-a{L}).^2);
+    disp(x);
+        mse(x) = sum((label-a{L}).^2)/output;
 %     mse(x) = sum((t(:,i)-a{total_layers}).^2);
     x=x+1;
 end
