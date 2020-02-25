@@ -1,30 +1,33 @@
-function add_noise_input(W,b,a,p,t)
-% p = [0,1,1,1,0,1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,0,1,1,1,0; %0
-%     0,1,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0; %1
-%     1,1,1,0,0,0,0,0,1,0,0,0,0,1,0,0,1,1,0,0,0,1,0,0,0,0,1,1,1,1]; %2
-% t = [1,0,0; %0
-%     0,1,0; %1
-%     0,0,1]; %2
+function add_noise_input(W,b,p,t,output)
+% % p = [0,1,1,1,0,1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,0,1,1,1,0; %0
+% %     0,1,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0; %1
+% %     1,1,1,0,0,0,0,0,1,0,0,0,0,1,0,0,1,1,0,0,0,1,0,0,0,0,1,1,1,1]; %2
+% % t = [1,0,0; %0
+% %     0,1,0; %1
+% %     0,0,1]; %2
 
-correct = 0;
-for h = 1:length(t)
-    for i = 0:4:8
-        for j = 1:10
-            for k = 1:length(W)
-                if (k == 1)
-                    a{k} = W{k}*addNoise(p(h,:),i)'+b{k};
-                else
-                    a{k} = W{k}*addNoise(a{k-1}',i)'+b{k};
-                end
+a = cell(output,1);
+error = zeros (3,10);
+
+
+for i = 0:4:8 %noise
+    for j = 1:10 %number of tests
+        for 
+        for k = 1:length(W) %calculation of a
+            if (k == 1)
+                a{k} = logsig(W{k}*addNoise(p(h,:),i)'+b{k});
+            else
+                a{k} = logsig(W{k}*addNoise(a{k-1}',i)'+b{k});
             end
-            [m, i1] = max(a{end});
-            [m2, i2] = max(t(:,h));
-            if (i1 == i2)
-                correct = correct+1;
-            end
+        end
+        [m, i1] = max(a{end});
+        [m2, i2] = max(t(:,h));
+        if (i1 == i2)
+            correct = correct+1;
         end
     end
 end
+
 
 disp (correct/90);
 
