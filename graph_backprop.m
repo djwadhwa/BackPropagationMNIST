@@ -15,12 +15,19 @@ layers = 4;
 neurons = 100;
 learning_rate = 0.08;
 [W,b,mse] = backprop(p,t,layers,neurons,learning_rate,epochs,output);
+error = noise_error(W,b,p,t);
 figure;
 plot1 = plot([1:epochs],mse);
 xlabel('epochs');
 ylabel('Mean Squared Error');
 name = ['MSE with ' num2str(output) ' digits, ' num2str(layers) ' layers and alpha of ' num2str(learning_rate)];
 title (name);
+figure;
+plot1 = plot([0,4,8],error);
+xlabel('noise (pixels)');
+ylabel('error (%)');
+title ('Error in classification as noise increases per digit');
+legend([plot1],["digit 0","digit 1","digit 2"]);
 
 p = loadMNISTImages("train-images.idx3-ubyte");
 t = loadMNISTLabels("train-labels.idx1-ubyte");
@@ -29,27 +36,22 @@ test_inputs = loadMNISTImages("t10k-images.idx3-ubyte");
 test_labels = loadMNISTLabels("t10k-labels.idx1-ubyte");
 
 progress = zeros(4,1);
-for j = 1:4
-    if (j == 1)
-        epochs = 10;
-    elseif(j == 3)
-        epochs = 20;
-    elseif (j == 3)
-        epochs = 40;
-    else
-        epochs = 60;
-    end
+counter = 1;
+for j = [5,10,20,40]
+    epochs = j;
     output = 10;
     layers = 2;
     neurons = 100;
     learning_rate = 0.06;
     [W,b,mse2] = backprop(p,t,layers,neurons,learning_rate,epochs,output);
+    
     figure;
     plot1 = plot([1:epochs],mse2);
     xlabel('epochs');
-    ylabel('Mean Squared Error ');
+    ylabel('Mean Squared Error');
     name = ['MSE with ' num2str(output) ' digits, ' num2str(layers) ' layers and alpha of ' num2str(learning_rate)];
     title (name);
+    
     x = 0;
     for i = 1:length(test_inputs)
         [m,ind] = max(logsig(W{2}*logsig(W{1}*test_inputs(:,i)+b{1})+b{2}));
@@ -57,13 +59,14 @@ for j = 1:4
             x = x+1;
         end
     end
-    progress(j,1) = x/length(test_inputs)*100;
+    progress(counter) = x*100/length(test_inputs);
+    counter=counter+1;
 end
 
 figure;
-plot1 = plot([10,20,40,60],progress(:,1));
+plot1 = plot([5,10,20,40],progress);
 xlabel('epochs');
-ylabel();
+ylabel('percent correct (%)');
 title ('Test Set classification accuracy for 10, 20, 40, and 60 epcohs');
 
 end

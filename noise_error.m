@@ -1,26 +1,26 @@
-function noise_error(W,b,p,t,output)
+function error = noise_error(W,b,p,t)
 
-a = cell(output,1);
-error = zeros (3,10);
+a = cell(length(W),1);
+error = zeros (3,length(t));
 
-
-for i = 0:4:8 %noise
-    for j = 1:10 %number of tests
-        for
-            for k = 1:length(W) %calculation of a
-                if (k == 1)
-                    a{k} = logsig(W{k}*addNoise(p(h,:),i)'+b{k});
+for i = 1:3
+    for j = length(t)
+        correct = 0;
+        for k = 1:10
+            for h = 1:length(W) %calculation of a
+                if (h == 1)
+                    noised_image = addNoise(p(:,j),i*4-4);
+                    a{h} = logsig(W{h}*noised_image+b{h});
                 else
-                    a{k} = logsig(W{k}*addNoise(a{k-1}',i)'+b{k});
+                    a{h} = logsig(W{h}*a{h-1}+b{h});
                 end
             end
-            [m, i1] = max(a{end});
-            [m2, i2] = max(t(:,h));
-            if (i1 == i2)
-                correct = correct+1;
+            [m,ind] = max(a{end});
+            if (ind == t(j)+1)
+                correct = correct +1;
             end
         end
+        error(i,j) = (10-correct)*100/10;
     end
-
 end
 end

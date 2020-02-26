@@ -12,4 +12,4 @@ end
 inds = randperm(length(pvec));
 
 % then, use the first n elements to flip pixels
-pvec(inds(1:num)) = -pvec(inds(1:num));
+pvec(inds(1:num)) = uint8(~pvec(inds(1:num)));

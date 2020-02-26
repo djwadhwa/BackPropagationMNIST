@@ -3,9 +3,8 @@ function [W,b,mse] = backprop(p, t, L, s, alpha, epochs, output)
 %alpha = learning_rate, epochs = # of epochs to propagate,
 %output = number_of_neurons in the output layer
 
-input_dimensions = size(p);
-input_length = input_dimensions(1);
-input_samples = input_dimensions(2);
+[input_length, input_samples] = size(p);
+
 % store all matricies
 W = cell(L,1); %weight
 b = cell(L,1); %bias
@@ -69,7 +68,6 @@ while x < epochs+1
             b{m} = b{m}-alpha*S{m};
         end
     end
-%     disp(x);
     mse(x) = mse(x)/input_samples;
     x=x+1;
 end
