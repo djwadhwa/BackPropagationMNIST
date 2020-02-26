@@ -27,14 +27,14 @@ for m = 1:L
     end
 end
 
-
+tic
 %calculate and propagate sensitivites backwards
 x = 1;
-mse = zeros(epochs-1);
-while x < epochs
-    
+mse = zeros(epochs,1);
+while x < epochs+1
     %feedforward
     label = zeros(output,1);
+    mse(x) = 0;
     for i = 1:input_samples
         for m = 1:L
             if (m == 1)
@@ -44,14 +44,15 @@ while x < epochs
             end
             a{m} = logsig(n{m}); %calculate the output for each layer
         end
+        %convert expected output to vector
         label(t(i)+1) = 1;
         
         %propagate sensitivities backwards
         for m = L:-1:1
             diff_sig = diag((1-a{m}).*a{m});
             if (m == L)
+                mse(x) = mse(x) + sum((label-a{m}).^2)/output;
                 S{m} = -2*diff_sig*(label-a{m});
-%                 S{m} = -2*diff_sig*(t(:,i)-a{m});
             else
                 S{m} = diff_sig*W{m+1}'*S{m+1};
             end
@@ -68,10 +69,9 @@ while x < epochs
             b{m} = b{m}-alpha*S{m};
         end
     end
-    label (t(i)+1) = 1;
-    disp(x);
-        mse(x) = sum((label-a{L}).^2)/output;
-%     mse(x) = sum((t(:,i)-a{total_layers}).^2);
+%     disp(x);
+    mse(x) = mse(x)/input_samples;
     x=x+1;
 end
+toc
 end
