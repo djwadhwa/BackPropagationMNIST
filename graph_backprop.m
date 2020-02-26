@@ -9,7 +9,7 @@ p = [0,1,1,1,0,1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,0,1,1,1,0; %0
 t = [0;1;2];
 
 % number of iterations for three digits
-epochs = 15000;
+epochs = 3000;
 output = 3;
 layers = 4;
 neurons = 100;
@@ -67,6 +67,6 @@ figure;
 plot1 = plot([5,10,20,40],progress);
 xlabel('epochs');
 ylabel('percent correct (%)');
-title ('Test Set classification accuracy for 10, 20, 40, and 60 epcohs');
+title ('Test Set classification accuracy for 5, 10, 20, and 40 epcohs');
 
 end
