@@ -9,7 +9,7 @@ p = [0,1,1,1,0,1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,0,1,1,1,0; %0
 t = [0;1;2];
 
 % number of iterations for three digits
-epochs = 3000;
+epochs = 250;
 output = 3;
 layers = 4;
 neurons = 100;
