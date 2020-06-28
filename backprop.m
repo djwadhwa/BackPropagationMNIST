@@ -42,6 +42,7 @@ while x < epochs+1
                 n{m} = W{m}*a{m-1}+b{m};
             end
             a{m} = logsig(n{m}); %calculate the output for each layer
+            end
         end
         %convert expected output to vector
         label(t(i)+1) = 1;
